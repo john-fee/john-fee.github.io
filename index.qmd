@@ -1,0 +1,17 @@
+---
+title: "John Fee"
+image: "files/profile_pic.jpg"
+about:
+  template: trestles
+  links:
+    - icon: envelope
+      href: mailto:john.edward.fee@gmail.com
+    - icon: linkedin
+      href: https://www.linkedin.com/in/john-fee/
+    - icon: github
+      href: https://github.com/john-fee
+    - text: "{{< fa brands bluesky >}}"
+      href: https://bsky.app/profile/john-fee.bsky.social
+---
+
+Welcome to my website!  It's under construction...

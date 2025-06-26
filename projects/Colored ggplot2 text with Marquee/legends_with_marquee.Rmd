@@ -1,0 +1,90 @@
+---
+title: "Colored ggplot2 legend text with Marquee"
+author: "John Fee"
+date: "June 16, 2024"
+output:
+  bookdown::html_document2:
+  toc: true
+toc_depth: 2
+---
+
+  I essentially follow [this walkthrough](https://nrennie.rbind.io/blog/coloured-text-legend-ggplot-ggtext-marquee) by Nicole Rennie. Note that getting the `element_marquee` to render properly required up to date versions of R and RStudio as of 6/16/2024.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  #fig.height = 7,
+  #fig.width = 10,
+  fig.align = "center"
+)
+```
+
+
+```{r}
+library(dplyr)
+library(glue)
+library(ggplot2)
+library(marquee)
+theme_set(ggpubr::theme_pubr())
+
+set.seed(1)
+```
+
+```{r}
+bar_df <- iris |>
+  # Let's collect 25 specimens while pretending that the iris dataset is our population
+  slice_sample(n = 25) |>
+  count(Species) |>
+  mutate(
+    Species = Species |>
+      as.character() |>
+      snakecase::to_any_case(case = "sentence"),
+    percentage = scales::label_percent()(n/sum(n)),
+    my_label = glue("{n} ({percentage})")
+  )
+
+my_palette <- RColorBrewer::brewer.pal(length(bar_df$Species),"Set1")
+names(my_palette) <- unique(bar_df$Species)
+
+make_group_string <- function(my_palette){
+  # Need to format my groups into a single string that uses marquee
+  # syntax to color the appropriate bits
+  formatted_strings <- glue(
+    "{.[my_palette] [names(my_palette)]}",
+    .open = "[",
+    .close = "]"
+  )
+
+  all_but_last <- formatted_strings[1:(length(formatted_strings) - 1)]
+  last_element <- formatted_strings[length(formatted_strings)]
+
+  paste(all_but_last,collapse = ", ") |>
+    paste0(", and ",last_element)
+}
+
+bar_df |>
+  mutate(
+    y_label = n + max(n)/20
+  ) |>
+  ggplot(aes(x = Species,y = n,fill = Species,label = my_label)) +
+  geom_col() +
+  geom_text(aes(y = y_label)) +
+  scale_fill_manual(name = "Species",values = my_palette) +
+  scale_y_continuous(
+    "# collected",
+    breaks = seq(0,10,2),
+    limits = c(0,10)
+  ) +
+  labs(
+    title = "What is the distribution of iris species in our sample?",
+    subtitle = glue::glue("The species collected include {make_group_string(my_palette)}")
+  ) +
+  theme(
+    plot.subtitle = element_marquee(),
+    legend.position = "None"
+  )
+
+```
+

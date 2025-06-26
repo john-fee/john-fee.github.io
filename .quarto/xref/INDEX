@@ -1,0 +1,17 @@
+{
+  "index.qmd": {
+    "index.html": "d8b26472"
+  },
+  "about.qmd": {
+    "about.html": "62281aeb"
+  },
+  "projects.qmd": {
+    "projects.html": "45e56e1c"
+  },
+  "projects/Colored ggplot2 text with Marquee/legends_with_marquee.Rmd": {
+    "legends_with_marquee.html": "d94f8b63"
+  },
+  "projects/collapsibility/Simulating Collapsibility.Rmd": {
+    "Simulating Collapsibility.html": "7a3fd6de"
+  }
+}

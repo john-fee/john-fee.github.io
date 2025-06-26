@@ -1,0 +1,17 @@
+{
+  "hash": "51081eb0059cd8abf1510cd627a59a03",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Colored ggplot2 legend text with Marquee\"\nauthor: \"John Fee\"\ndate: \"June 16, 2024\"\noutput:\n  bookdown::html_document2:\n  toc: true\ntoc_depth: 2\n---\n\n\n\n  I essentially follow [this walkthrough](https://nrennie.rbind.io/blog/coloured-text-legend-ggplot-ggtext-marquee) by Nicole Rennie. Note that getting the `element_marquee` to render properly required up to date versions of R and RStudio as of 6/16/2024.\n\n\n\n\n\n::: {.cell layout-align=\"center\"}\n\n```{.r .cell-code}\nlibrary(dplyr)\nlibrary(glue)\nlibrary(ggplot2)\nlibrary(marquee)\ntheme_set(ggpubr::theme_pubr())\n\nset.seed(1)\n```\n:::\n\n::: {.cell layout-align=\"center\"}\n\n```{.r .cell-code}\nbar_df <- iris |>\n  # Let's collect 25 specimens while pretending that the iris dataset is our population\n  slice_sample(n = 25) |>\n  count(Species) |>\n  mutate(\n    Species = Species |>\n      as.character() |>\n      snakecase::to_any_case(case = \"sentence\"),\n    percentage = scales::label_percent()(n/sum(n)),\n    my_label = glue(\"{n} ({percentage})\")\n  )\n\nmy_palette <- RColorBrewer::brewer.pal(length(bar_df$Species),\"Set1\")\nnames(my_palette) <- unique(bar_df$Species)\n\nmake_group_string <- function(my_palette){\n  # Need to format my groups into a single string that uses marquee\n  # syntax to color the appropriate bits\n  formatted_strings <- glue(\n    \"{.[my_palette] [names(my_palette)]}\",\n    .open = \"[\",\n    .close = \"]\"\n  )\n\n  all_but_last <- formatted_strings[1:(length(formatted_strings) - 1)]\n  last_element <- formatted_strings[length(formatted_strings)]\n\n  paste(all_but_last,collapse = \", \") |>\n    paste0(\", and \",last_element)\n}\n\nbar_df |>\n  mutate(\n    y_label = n + max(n)/20\n  ) |>\n  ggplot(aes(x = Species,y = n,fill = Species,label = my_label)) +\n  geom_col() +\n  geom_text(aes(y = y_label)) +\n  scale_fill_manual(name = \"Species\",values = my_palette) +\n  scale_y_continuous(\n    \"# collected\",\n    breaks = seq(0,10,2),\n    limits = c(0,10)\n  ) +\n  labs(\n    title = \"What is the distribution of iris species in our sample?\",\n    subtitle = glue::glue(\"The species collected include {make_group_string(my_palette)}\")\n  ) +\n  theme(\n    plot.subtitle = element_marquee(),\n    legend.position = \"None\"\n  )\n```\n\n::: {.cell-output-display}\n![](legends_with_marquee_files/figure-html/unnamed-chunk-2-1.png){fig-align='center' width=672}\n:::\n:::\n",
+    "supporting": [
+      "legends_with_marquee_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

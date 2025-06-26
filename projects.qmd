@@ -1,0 +1,6 @@
+---
+title: "My Projects"
+listing:
+  contents: projects
+  type: grid
+---
