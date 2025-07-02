@@ -9,6 +9,9 @@ website:
       - href: index.qmd
         icon: person-circle
         text: About
+      - href: resume.qmd
+        text: Resume
+        icon: file-earmark-check
       - href: projects.qmd
         icon: pencil-square
         text: Projects

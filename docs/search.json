@@ -75,5 +75,12 @@
     "title": "Simulating collapsibility",
     "section": "Scenario 3 - Confounders present, prognostic variable omitted",
     "text": "Scenario 3 - Confounders present, prognostic variable omitted\nNow I remove \\(W\\) from the model fitting.\n\nresults &lt;- simulate_multiple_datasets(\n  n = 500,\n  sigma = cov_matrix_confounding,\n  n_simulations = 1000,\n  simulate_function = simulate_logistic_reg_model,\n  y_formula = 3*W + X + 1.5*Z,\n  x_threshold = qnorm(0.5) # Chosen so X is a 50/50 split in both treatment groups\n) %&gt;%\n  mutate(\n    fitted_model = map(data,~ glm(\n      outcome ~ X + Z,\n      family = binomial(link = \"logit\"),\n      data = .x))\n    )\n\n\ncoef_df &lt;- coef_df &lt;- true_coefs %&gt;%\n  get_coef_df(results,.)\n\nplot_coefficient_distribution(\n  coef_df,\n  title = \"Distribution of logistic regression parameter estimates \\nfit on data simulated from the same model\"\n  )\n\n\n\n\n\n\n\n\n\n\n\nSummary table for parameters of \\(n = 1000\\) logistic GLMs fit on simulated data with confounders\n\n\nVariable\nParameter estimate\nTrue value\nBias\n\n\n\n\n(Intercept)\n0.0064395\n0.0\n0.0064395\n\n\nX\n0.2457032\n1.0\n-0.7542968\n\n\nZ\n0.4046214\n1.5\n-1.0953786\n\n\n\n\n\nThe estimated coefficients are now way off (and in the wrong direction)!"
+  },
+  {
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "My resume",
+    "section": "",
+    "text": "Download PDF file."
   }
 ]
